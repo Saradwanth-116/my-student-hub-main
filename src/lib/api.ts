@@ -8,6 +8,7 @@ export async function apiFetch<T>(path: string, token: string): Promise<T> {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "69420",
       },
     });
     if (!res.ok) {
