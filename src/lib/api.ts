@@ -1,17 +1,27 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export async function apiFetch<T>(path: string, token: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`API ${res.status}: ${body}`);
+  const url = `${API_BASE}${path}`;
+  console.log("[API] Fetching:", url);
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error("[API] Error response:", res.status, body);
+      throw new Error(`API ${res.status}: ${body}`);
+    }
+    const data = await res.json();
+    console.log("[API] Success:", path, data);
+    return data;
+  } catch (err) {
+    console.error("[API] Fetch failed:", path, err);
+    throw err;
   }
-  return res.json();
 }
 
 export type AttendanceRecord = {
