@@ -40,12 +40,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
       <aside className="hidden w-64 flex-col border-r border-border bg-card p-6 md:flex">
-        <div className="mb-8 flex items-center gap-3">
+        <Link to="/dashboard" className="mb-8 flex items-center gap-3 hover:opacity-80 transition-opacity">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
             <GraduationCap className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-heading text-lg font-bold text-foreground">Student Portal</span>
-        </div>
+        </Link>
 
         <nav className="flex flex-1 flex-col gap-1">
           {navItems.map((item) => {
@@ -81,12 +81,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       {/* Mobile header */}
       <div className="flex flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 md:hidden">
-          <div className="flex items-center gap-2">
+          <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <GraduationCap className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="font-heading text-base font-bold">EduPortal</span>
-          </div>
+          </Link>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
           </Button>
