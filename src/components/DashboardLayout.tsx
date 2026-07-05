@@ -1,13 +1,14 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { GraduationCap, LayoutDashboard, ClipboardList, Award, LogOut, Moon, Sun } from "lucide-react";
+import { GraduationCap, LayoutDashboard, ClipboardList, Award, LogOut, Moon, Sun, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
   { label: "Attendance", icon: ClipboardList, path: "/attendance" },
   { label: "Marks", icon: Award, path: "/marks" },
+  { label: "Performance ML", icon: BrainCircuit, path: "/performance" },
 ];
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
