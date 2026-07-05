@@ -31,7 +31,6 @@ const CustomCircleTick = (props: { x?: number; y?: number; payload?: { value: st
       transform={`translate(${x},${y})`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ pointerEvents: 'bounding-box' }}
     >
       {/* Invisible larger circle to increase hover area */}
       <circle cx={0} cy={14} r={16} fill="transparent" className="cursor-pointer" />
