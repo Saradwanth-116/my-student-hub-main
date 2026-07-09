@@ -65,8 +65,8 @@ const Login = () => {
 
       <div className="w-full max-w-md animate-fade-in">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary">
-            <GraduationCap className="h-8 w-8 text-primary-foreground" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl overflow-hidden border border-border bg-card">
+            <img src="/logo.png" alt="StudentHub Logo" className="h-full w-full object-cover" />
           </div>
           <h1 className="font-heading text-3xl font-bold text-foreground">Student Portal</h1>
           <p className="mt-2 text-muted-foreground">
