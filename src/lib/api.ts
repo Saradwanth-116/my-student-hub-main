@@ -45,10 +45,55 @@ export type MarksEntry = {
   grade: string;
 };
 
+import supabase from "./supabase";
+
 export async function fetchAttendanceData(token: string): Promise<AttendanceRecord[]> {
-  return apiFetch<AttendanceRecord[]>("/api/student/attendance", token);
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("Not authenticated");
+
+  const { data, error } = await supabase
+    .from("attendance")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("code");
+
+  if (error) throw error;
+  return data as AttendanceRecord[];
 }
 
 export async function fetchMarksData(token: string): Promise<Record<string, MarksEntry[]>> {
-  return apiFetch<Record<string, MarksEntry[]>>("/api/student/marks", token);
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) throw new Error("Not authenticated");
+
+  const { data, error } = await supabase
+    .from("marks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("code");
+
+  if (error) throw error;
+
+  const grouped: Record<string, MarksEntry[]> = {};
+  for (const row of data || []) {
+    const yearLabel = row.year_label || "Unknown";
+    // We don't necessarily need to delete the extra keys (like user_id, id) in JS,
+    // but the backend did it. To match the type perfectly, we just group them.
+    if (!grouped[yearLabel]) {
+      grouped[yearLabel] = [];
+    }
+    
+    grouped[yearLabel].push({
+      subject: row.subject,
+      code: row.code,
+      mid1: row.mid1,
+      mid1Total: row.mid1Total,
+      mid2: row.mid2,
+      mid2Total: row.mid2Total,
+      semester: row.semester,
+      semesterTotal: row.semesterTotal,
+      grade: row.grade,
+    } as MarksEntry);
+  }
+
+  return grouped;
 }
