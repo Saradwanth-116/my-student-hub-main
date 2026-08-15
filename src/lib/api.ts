@@ -1,12 +1,12 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export async function apiFetch<T>(path: string, token: string): Promise<T> {
-  const url = `${API_BASE}${path}`;
+  const url = ${API_BASE};
   console.log("[API] Fetching:", url);
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: Bearer ,
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "69420",
       },
@@ -14,7 +14,7 @@ export async function apiFetch<T>(path: string, token: string): Promise<T> {
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       console.error("[API] Error response:", res.status, body);
-      throw new Error(`API ${res.status}: ${body}`);
+      throw new Error(API : );
     }
     const data = await res.json();
     console.log("[API] Success:", path, data);
@@ -118,6 +118,26 @@ export type TeacherMarkEntry = MarksEntry & {
 };
 
 export async function fetchAllMarksWithProfiles(): Promise<TeacherMarkEntry[]> {
-  // Using an empty token since the bypass teacher login doesn't have a real token
-  return apiFetch<TeacherMarkEntry[]>("/api/student/all-marks-with-profiles", "");
+  const { data, error } = await supabase.rpc('get_all_marks_with_profiles');
+  
+  if (error) {
+    console.error("Failed to fetch all marks:", error);
+    return [];
+  }
+  
+  return (data as any[]).map((row: any) => ({
+    subject: row.subject,
+    code: row.code,
+    mid1: row.mid1,
+    mid1Total: row.mid1Total,
+    mid2: row.mid2,
+    mid2Total: row.mid2Total,
+    semester: row.semester,
+    semesterTotal: row.semesterTotal,
+    grade: row.grade,
+    profiles: {
+      name: row.student_name,
+      roll_no: row.student_roll_no
+    }
+  }));
 }
