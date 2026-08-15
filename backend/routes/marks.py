@@ -20,3 +20,21 @@ async def get_marks(user: dict = Depends(get_current_user)):
         grouped[year_label].append(row)
 
     return grouped
+
+@router.get("/peer-averages")
+async def get_peer_averages(user: dict = Depends(get_current_user)):
+    # Calculate true averages across all users
+    result = supabase.table("marks").select("code, semester, year_label").execute()
+    
+    sums: dict[str, float] = {}
+    counts: dict[str, int] = {}
+    
+    for row in result.data:
+        code = row.get("code")
+        score = row.get("semester")
+        if code and score is not None:
+            sums[code] = sums.get(code, 0) + score
+            counts[code] = counts.get(code, 0) + 1
+            
+    averages = {code: round(sums[code] / counts[code]) for code in sums}
+    return averages

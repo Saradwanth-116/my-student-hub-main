@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { fetchMarksData, type MarksEntry } from "@/lib/api";
+import { fetchMarksData, fetchPeerAverages, type MarksEntry } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, BrainCircuit, Activity, Lightbulb } from "lucide-react";
 import {
@@ -67,15 +67,15 @@ const CustomCircleTick = (props: { x?: number; y?: number; payload?: { value: st
   );
 };
 
-// Mock data generation for Peer Comparison
-const generatePeerData = (userMarks: MarksEntry[]) => {
+// True data lookup for Peer Comparison
+const generatePeerData = (userMarks: MarksEntry[], peerAverages: Record<string, number>) => {
   return userMarks.map((m) => {
-    // Generate a random anonymous peer average slightly above or below the user
-    const peerAvg = Math.max(30, Math.min(100, m.semester + (Math.random() * 20 - 10)));
+    // Lookup the true peer average from the backend, fallback if missing
+    const peerAvg = peerAverages[m.code] ?? m.semester;
     return {
       subject: m.subject,
       userScore: m.semester,
-      peerAverage: Math.round(peerAvg),
+      peerAverage: peerAvg,
     };
   });
 };
@@ -99,11 +99,19 @@ const generateTotalProgressionData = (allYearsData: Record<string, MarksEntry[]>
 const Performance = () => {
   const { session, profile } = useAuth();
 
-  const { data: marksData = {}, isLoading } = useQuery<Record<string, MarksEntry[]>>({
+  const { data: marksData = {}, isLoading: isMarksLoading } = useQuery<Record<string, MarksEntry[]>>({
     queryKey: ["marks", session?.user?.id],
     queryFn: () => fetchMarksData(session!.access_token),
     enabled: !!session,
   });
+
+  const { data: peerAverages = {}, isLoading: isPeersLoading } = useQuery<Record<string, number>>({
+    queryKey: ["peerAverages"],
+    queryFn: () => fetchPeerAverages(session!.access_token),
+    enabled: !!session,
+  });
+
+  const isLoading = isMarksLoading || isPeersLoading;
 
   const years = useMemo(() => Object.keys(marksData), [marksData]);
   const tabs = useMemo(() => [...years, "Total Performance"], [years]);
@@ -188,7 +196,7 @@ const Performance = () => {
                         <Line type="monotone" dataKey="Semester" stroke="#ffc658" strokeWidth={3} dot={{ r: 6 }} activeDot={{ r: 8 }} name="Semester Final (%)" />
                       </LineChart>
                     ) : (
-                      <LineChart data={generatePeerData(marksData[activeTab] || [])} margin={{ top: 5, right: 30, left: 20, bottom: 25 }}>
+                      <LineChart data={generatePeerData(marksData[activeTab] || [], peerAverages)} margin={{ top: 5, right: 30, left: 20, bottom: 25 }}>
                         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
                         <XAxis dataKey="subject" tick={<CustomCircleTick />} height={40} />
                         <YAxis domain={[0, 100]} />

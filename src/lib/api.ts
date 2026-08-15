@@ -97,3 +97,7 @@ export async function fetchMarksData(token: string): Promise<Record<string, Mark
 
   return grouped;
 }
+
+export async function fetchPeerAverages(token: string): Promise<Record<string, number>> {
+  return apiFetch<Record<string, number>>("/api/student/peer-averages", token);
+}
