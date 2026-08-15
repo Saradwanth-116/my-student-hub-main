@@ -16,56 +16,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Custom X-Axis Tick that renders a circle and an SVG tooltip on hover
-const CustomCircleTick = (props: { x?: number; y?: number; payload?: { value: string } }) => {
-  const { x = 0, y = 0, payload } = props;
-  const [isHovered, setIsHovered] = useState(false);
-  
-  // Calculate width based on text length roughly
-  const label = payload?.value || "";
-  const textWidth = Math.max(120, label.length * 8);
-  const boxX = -(textWidth / 2);
-
-  return (
-    <g 
-      transform={`translate(${x},${y})`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Invisible larger circle to increase hover area */}
-      <circle cx={0} cy={14} r={16} fill="transparent" className="cursor-pointer" />
-      {/* Visible small circle */}
-      <circle cx={0} cy={14} r={5} className={`transition-colors cursor-pointer ${isHovered ? 'fill-primary' : 'fill-muted-foreground'}`} />
-      
-      {/* Custom SVG Tooltip Message Box */}
-      {isHovered && (
-        <g transform="translate(0, 30)">
-          <rect 
-            x={boxX} 
-            y={0} 
-            width={textWidth} 
-            height={28} 
-            fill="hsl(var(--card))" 
-            stroke="hsl(var(--border))" 
-            strokeWidth={1}
-            rx={6} 
-          />
-          <text 
-            x={0} 
-            y={19} 
-            textAnchor="middle" 
-            fill="hsl(var(--foreground))" 
-            fontSize={12} 
-            fontWeight={500}
-            className="font-sans"
-          >
-            {label}
-          </text>
-        </g>
-      )}
-    </g>
-  );
-};
+// Removed CustomCircleTick to use standard text labels
 
 // True data lookup for Peer Comparison
 const generatePeerData = (userMarks: MarksEntry[], peerAverages: Record<string, number>) => {
@@ -86,7 +37,7 @@ const generateTotalProgressionData = (allYearsData: Record<string, MarksEntry[]>
   Object.keys(allYearsData).forEach((year) => {
     allYearsData[year].forEach((m) => {
       data.push({
-        name: `${year} - ${m.subject.substring(0, 10)}...`,
+        name: `${year} - ${m.subject}`,
         Mid1: Math.round((m.mid1 / m.mid1Total) * 100),
         Mid2: Math.round((m.mid2 / m.mid2Total) * 100),
         Semester: Math.round((m.semester / m.semesterTotal) * 100),
@@ -187,7 +138,11 @@ const Performance = () => {
                     {isTotal ? (
                       <LineChart data={generateTotalProgressionData(marksData)} margin={{ top: 5, right: 30, left: 20, bottom: 25 }}>
                         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis dataKey="name" tick={<CustomCircleTick />} height={40} />
+                        <XAxis 
+                          dataKey="name" 
+                          height={20} 
+                          tick={false}
+                        />
                         <YAxis domain={[0, 100]} />
                         <RechartsTooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
                         <Legend wrapperStyle={{ paddingTop: "30px" }} />
@@ -198,7 +153,11 @@ const Performance = () => {
                     ) : (
                       <LineChart data={generatePeerData(marksData[activeTab] || [], peerAverages)} margin={{ top: 5, right: 30, left: 20, bottom: 25 }}>
                         <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                        <XAxis dataKey="subject" tick={<CustomCircleTick />} height={40} />
+                        <XAxis 
+                          dataKey="subject" 
+                          height={20} 
+                          tick={false}
+                        />
                         <YAxis domain={[0, 100]} />
                         <RechartsTooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }} />
                         <Legend wrapperStyle={{ paddingTop: "30px" }} />

@@ -10,6 +10,11 @@ import Marks from "./pages/Marks";
 import Performance from "./pages/Performance";
 import NotFound from "./pages/NotFound";
 import UnderConstruction from "./pages/UnderConstruction";
+import Resources from "./pages/Resources";
+import Analytics from "./pages/Analytics";
+import History from "./pages/History";
+import Assessments from "./pages/Assessments";
+import Notifications from "./pages/Notifications";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -56,6 +61,11 @@ const App = () => (
             <Route path="/teacher" element={<UnderConstruction role="Teacher" />} />
             <Route path="/marks" element={<ProtectedRoute><Marks /></ProtectedRoute>} />
             <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
+            <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+            <Route path="/assessments" element={<ProtectedRoute><Assessments /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

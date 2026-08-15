@@ -5,7 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchAttendanceData, type AttendanceRecord } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { User, BookOpen, CalendarCheck, TrendingUp, Loader2 } from "lucide-react";
+import { User, BookOpen, CalendarCheck, TrendingUp, Loader2, Info } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const getStatusBadge = (pct: number) => {
   if (pct >= 85) return <Badge className="bg-success text-success-foreground">Good</Badge>;
@@ -39,11 +47,48 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="animate-fade-in space-y-6">
-        <div>
-          <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">
-            Welcome, {profile?.name?.split(" ")[0] ?? "Student"}
-          </h1>
-          <p className="text-muted-foreground">Here's your academic overview</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-foreground md:text-3xl">
+              Welcome, {profile?.name?.split(" ")[0] ?? "Student"}
+            </h1>
+            <p className="text-muted-foreground">Here's your academic overview</p>
+          </div>
+          
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="group flex h-10 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground">
+                <Info className="h-5 w-5" />
+                <span className="w-0 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out group-hover:w-[75px] opacity-0 group-hover:opacity-100">
+                  Quick Info
+                </span>
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>College Credentials</DialogTitle>
+                <DialogDescription>
+                  Your official college digital access credentials. Do not share these with anyone.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col gap-4 py-2">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none">College Email</p>
+                  <p className="text-sm text-muted-foreground">{profile?.roll_no?.toLowerCase() ?? "student"}@college.edu</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none">Default Password</p>
+                  <p className="text-sm text-muted-foreground font-mono bg-muted p-2 rounded mt-1 select-all">
+                    C0llege@{profile?.roll_no ?? "123"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none">WiFi Access</p>
+                  <p className="text-sm text-muted-foreground">Network: Eduroam</p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Stats */}
