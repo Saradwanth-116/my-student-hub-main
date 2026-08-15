@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, Eye, EyeOff, Moon, Sun } from "lucide-react";
+import { ShieldAlert, Presentation, GraduationCap, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,13 +12,13 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isSignup, setIsSignup] = useState(false);
+  const [role, setRole] = useState<"student" | "admin" | "teacher">("student");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Theme state
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
 
-  const { login, signup } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,17 +38,28 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Bypass authentication for admin and teacher demo
+    if (role === "admin") {
+      navigate("/admin");
+      return;
+    }
+    
+    if (role === "teacher") {
+      navigate("/teacher");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const result = isSignup
-      ? await signup(email, password)
-      : await login(email, password);
+    const result = await login(email, password);
 
     setIsSubmitting(false);
 
     if (result.success) {
-      toast.success(isSignup ? "Account created!" : "Welcome back!");
-      navigate("/dashboard");
+      if (role === "student") {
+        navigate("/dashboard");
+      }
     } else {
       toast.error(result.error ?? "Something went wrong");
     }
@@ -68,16 +79,46 @@ const Login = () => {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl overflow-hidden border border-border bg-card">
             <img src="/logo.png" alt="StudentHub Logo" className="h-full w-full object-cover" />
           </div>
-          <h1 className="font-heading text-3xl font-bold text-foreground">Student Portal</h1>
+          <h1 className="font-heading text-3xl font-bold text-foreground">
+            {role.charAt(0).toUpperCase() + role.slice(1)} Portal
+          </h1>
           <p className="mt-2 text-muted-foreground">
-            {isSignup ? "Create your account" : "Sign in to view your academic records"}
+            Sign in to access your {role} dashboard
           </p>
+        </div>
+
+        {/* Role Selection */}
+        <div className="mb-6 grid grid-cols-3 gap-2">
+          <Button
+            variant={role === "admin" ? "default" : "outline"}
+            className="flex flex-col items-center gap-2 h-auto py-3"
+            onClick={() => setRole("admin")}
+          >
+            <ShieldAlert className="h-5 w-5" />
+            <span className="text-xs">Admin</span>
+          </Button>
+          <Button
+            variant={role === "student" ? "default" : "outline"}
+            className="flex flex-col items-center gap-2 h-auto py-3"
+            onClick={() => setRole("student")}
+          >
+            <GraduationCap className="h-5 w-5" />
+            <span className="text-xs">Student</span>
+          </Button>
+          <Button
+            variant={role === "teacher" ? "default" : "outline"}
+            className="flex flex-col items-center gap-2 h-auto py-3"
+            onClick={() => setRole("teacher")}
+          >
+            <Presentation className="h-5 w-5" />
+            <span className="text-xs">Teacher</span>
+          </Button>
         </div>
 
         <Card className="border-border shadow-lg">
           <CardHeader className="pb-4">
             <h2 className="font-heading text-xl font-semibold text-foreground">
-              {isSignup ? "Sign Up" : "Sign In"}
+              Secure Sign In
             </h2>
           </CardHeader>
           <CardContent>
@@ -90,7 +131,7 @@ const Login = () => {
                   placeholder="you@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                  required={role === "student"}
                 />
               </div>
               <div className="space-y-2">
@@ -102,8 +143,8 @@ const Login = () => {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
+                    required={role === "student"}
+                    minLength={role === "student" ? 6 : 0}
                   />
                   <button
                     type="button"
@@ -115,22 +156,10 @@ const Login = () => {
                 </div>
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Please wait..."
-                  : isSignup
-                    ? "Create Account"
-                    : "Sign In"}
+                {role === "student" 
+                  ? (isSubmitting ? "Please wait..." : "Sign In") 
+                  : `Enter ${role.charAt(0).toUpperCase() + role.slice(1)} Portal`}
               </Button>
-              <p className="text-center text-sm text-muted-foreground">
-                {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-                <button
-                  type="button"
-                  onClick={() => setIsSignup(!isSignup)}
-                  className="font-medium text-primary hover:underline"
-                >
-                  {isSignup ? "Sign In" : "Sign Up"}
-                </button>
-              </p>
             </form>
           </CardContent>
         </Card>

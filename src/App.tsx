@@ -6,10 +6,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Attendance from "./pages/Attendance";
 import Marks from "./pages/Marks";
 import Performance from "./pages/Performance";
 import NotFound from "./pages/NotFound";
+import UnderConstruction from "./pages/UnderConstruction";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -52,7 +52,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/attendance" element={<ProtectedRoute><Attendance /></ProtectedRoute>} />
+            <Route path="/admin" element={<UnderConstruction role="Admin" />} />
+            <Route path="/teacher" element={<UnderConstruction role="Teacher" />} />
             <Route path="/marks" element={<ProtectedRoute><Marks /></ProtectedRoute>} />
             <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

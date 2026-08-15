@@ -1,10 +1,17 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchAttendanceData, type AttendanceRecord } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { User, BookOpen, CalendarCheck, TrendingUp, Loader2 } from "lucide-react";
+
+const getStatusBadge = (pct: number) => {
+  if (pct >= 85) return <Badge className="bg-success text-success-foreground">Good</Badge>;
+  if (pct >= 75) return <Badge className="bg-warning text-warning-foreground">Low</Badge>;
+  return <Badge variant="destructive">Critical</Badge>;
+};
 
 const Dashboard = () => {
   const { profile, session } = useAuth();
@@ -15,13 +22,9 @@ const Dashboard = () => {
     enabled: !!session,
   });
 
-  const overallAttendance =
-    attendanceData.length > 0
-      ? Math.round(
-        attendanceData.reduce((sum, s) => sum + s.percentage, 0) /
-        attendanceData.length
-      )
-      : 0;
+  const totalAttended = attendanceData.reduce((s, a) => s + a.attended, 0);
+  const totalClasses = attendanceData.reduce((s, a) => s + a.total, 0);
+  const overallAttendance = totalClasses > 0 ? Math.round((totalAttended / totalClasses) * 100) : 0;
 
   if (isLoading) {
     return (
@@ -65,33 +68,63 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Attendance Quick View */}
+        {/* Subject-wise Detailed Attendance */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Card>
+            <CardContent className="p-5 text-center">
+              <p className="text-sm text-muted-foreground">Total Classes</p>
+              <p className="font-heading text-3xl font-bold text-foreground">{totalClasses}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-5 text-center">
+              <p className="text-sm text-muted-foreground">Attended</p>
+              <p className="font-heading text-3xl font-bold text-success">{totalAttended}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-5 text-center">
+              <p className="text-sm text-muted-foreground">Overall</p>
+              <p className={`font-heading text-3xl font-bold ${overallAttendance >= 75 ? "text-success" : "text-destructive"}`}>
+                {overallAttendance}%
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card>
           <CardHeader>
-            <CardTitle className="font-heading text-lg">Attendance Overview</CardTitle>
+            <CardTitle className="font-heading text-lg">Subject-wise Attendance</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {attendanceData.length === 0 && (
+          <CardContent>
+            {attendanceData.length === 0 ? (
               <p className="text-sm text-muted-foreground">No attendance data yet.</p>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Subject</TableHead>
+                    <TableHead className="text-center">Code</TableHead>
+                    <TableHead className="text-center">Attended</TableHead>
+                    <TableHead className="text-center">Total</TableHead>
+                    <TableHead className="text-center">%</TableHead>
+                    <TableHead className="text-center">Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {attendanceData.map((s) => (
+                    <TableRow key={s.code}>
+                      <TableCell className="font-medium">{s.subject}</TableCell>
+                      <TableCell className="text-center text-muted-foreground">{s.code}</TableCell>
+                      <TableCell className="text-center">{s.attended}</TableCell>
+                      <TableCell className="text-center">{s.total}</TableCell>
+                      <TableCell className="text-center font-semibold">{s.percentage}%</TableCell>
+                      <TableCell className="text-center">{getStatusBadge(s.percentage)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             )}
-            {attendanceData.map((s) => (
-              <div key={s.code} className="space-y-1.5">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium text-foreground">{s.subject}</span>
-                  <span
-                    className={`font-semibold ${s.percentage >= 85
-                        ? "text-success"
-                        : s.percentage >= 75
-                          ? "text-warning"
-                          : "text-destructive"
-                      }`}
-                  >
-                    {s.percentage}%
-                  </span>
-                </div>
-                <Progress value={s.percentage} className="h-2" />
-              </div>
-            ))}
           </CardContent>
         </Card>
       </div>
