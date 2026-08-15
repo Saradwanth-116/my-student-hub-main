@@ -55,13 +55,13 @@ const Dashboard = () => {
             </h1>
             <p className="text-muted-foreground">Here's your academic overview</p>
           </div>
-          
+
           <Dialog>
             <DialogTrigger asChild>
               <button className="group flex h-10 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground">
                 <Info className="h-5 w-5" />
                 <span className="w-0 overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out group-hover:w-[75px] opacity-0 group-hover:opacity-100">
-                  Quick Info
+                  Profile
                 </span>
               </button>
             </DialogTrigger>
@@ -105,9 +105,9 @@ const Dashboard = () => {
                   <p className="text-sm font-medium leading-none">Bio Details</p>
                   <p className="text-sm text-muted-foreground italic">No additional details</p>
                 </div>
-                
+
                 <div className="mt-2 border-t border-border pt-4">
-                  <Button variant="outline" className="w-full" onClick={() => {}}>
+                  <Button variant="outline" className="w-full" onClick={() => { }}>
                     Request Profile Update
                   </Button>
                   <p className="text-xs text-center text-muted-foreground mt-2">
