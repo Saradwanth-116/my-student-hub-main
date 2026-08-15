@@ -119,26 +119,50 @@ const Dashboard = () => {
           </Dialog>
         </div>
 
-        {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { label: "Roll Number", value: profile?.roll_no ?? "—", icon: User, color: "text-primary" },
-            { label: "Department", value: profile?.department ?? "—", icon: BookOpen, color: "text-secondary dark:text-primary" },
-            { label: "Semester", value: profile ? `Sem ${profile.semester}` : "—", icon: CalendarCheck, color: "text-accent dark:text-primary" },
-            { label: "Overall Attendance", value: `${overallAttendance}%`, icon: TrendingUp, color: "text-success" },
-          ].map((stat) => (
-            <Card key={stat.label}>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className={`rounded-xl bg-muted p-3 ${stat.color}`}>
-                  <stat.icon className="h-5 w-5" />
+        {/* Profile & Deadlines */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card className="flex flex-col justify-center">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <User className="h-8 w-8" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-                  <p className="font-heading text-lg font-bold text-foreground">{stat.value}</p>
+                  <h2 className="text-xl font-bold">{profile?.name ?? "Student"}</h2>
+                  <p className="text-muted-foreground">{profile?.roll_no ?? "—"}</p>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground ml-1">
+                <BookOpen className="h-4 w-4 text-primary" />
+                <span>{profile?.department ?? "—"} &bull; Sem {profile?.semester ?? "—"}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="flex flex-col justify-center">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <CalendarCheck className="h-5 w-5 text-warning" />
+                <h3 className="font-semibold">Upcoming Deadlines</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-l-2 border-destructive pl-3">
+                  <div>
+                    <p className="text-sm font-medium">OS Assignment 2</p>
+                    <p className="text-xs text-muted-foreground">Operating Systems</p>
+                  </div>
+                  <p className="text-sm font-bold text-destructive">Tomorrow</p>
+                </div>
+                <div className="flex items-center justify-between border-l-2 border-primary pl-3">
+                  <div>
+                    <p className="text-sm font-medium">DBMS Mini Project</p>
+                    <p className="text-xs text-muted-foreground">Database Systems</p>
+                  </div>
+                  <p className="text-sm font-bold">Oct 25</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Subject-wise Detailed Attendance */}
