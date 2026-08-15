@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const getStatusBadge = (pct: number) => {
   if (pct >= 85) return <Badge className="bg-success text-success-foreground">Good</Badge>;
@@ -66,25 +67,52 @@ const Dashboard = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>College Credentials</DialogTitle>
+                <DialogTitle>Student Profile</DialogTitle>
                 <DialogDescription>
-                  Your official college digital access credentials. Do not share these with anyone.
+                  Your official academic records and personal details.
                 </DialogDescription>
               </DialogHeader>
               <div className="flex flex-col gap-4 py-2">
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">College Email</p>
-                  <p className="text-sm text-muted-foreground">{profile?.roll_no?.toLowerCase() ?? "student"}@college.edu</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Name</p>
+                    <p className="text-sm text-muted-foreground">{profile?.name ?? "—"}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Roll Number</p>
+                    <p className="text-sm text-muted-foreground">{profile?.roll_no ?? "—"}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Year & Semester</p>
+                    <p className="text-sm text-muted-foreground">
+                      {profile?.semester ? `Year ${Math.ceil(profile.semester / 2)}, Sem ${profile.semester}` : "—"}
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Branch</p>
+                    <p className="text-sm text-muted-foreground">{profile?.department ?? "—"}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Phone</p>
+                    <p className="text-sm text-muted-foreground italic">Not provided</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">Address</p>
+                    <p className="text-sm text-muted-foreground italic">Not provided</p>
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">Default Password</p>
-                  <p className="text-sm text-muted-foreground font-mono bg-muted p-2 rounded mt-1 select-all">
-                    C0llege@{profile?.roll_no ?? "123"}
+                  <p className="text-sm font-medium leading-none">Bio Details</p>
+                  <p className="text-sm text-muted-foreground italic">No additional details</p>
+                </div>
+                
+                <div className="mt-2 border-t border-border pt-4">
+                  <Button variant="outline" className="w-full" onClick={() => {}}>
+                    Request Profile Update
+                  </Button>
+                  <p className="text-xs text-center text-muted-foreground mt-2">
+                    Information can only be changed by submitting an official request to administration.
                   </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">WiFi Access</p>
-                  <p className="text-sm text-muted-foreground">Network: Eduroam</p>
                 </div>
               </div>
             </DialogContent>
