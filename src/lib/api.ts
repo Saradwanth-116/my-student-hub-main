@@ -99,5 +99,13 @@ export async function fetchMarksData(token: string): Promise<Record<string, Mark
 }
 
 export async function fetchPeerAverages(token: string): Promise<Record<string, number>> {
-  return apiFetch<Record<string, number>>("/api/student/peer-averages", token);
+  // Call the Supabase Postgres function securely to get all peer averages
+  const { data, error } = await supabase.rpc('get_peer_averages');
+  
+  if (error) {
+    console.error("Failed to fetch peer averages from Supabase:", error);
+    return {};
+  }
+  
+  return data as Record<string, number>;
 }
