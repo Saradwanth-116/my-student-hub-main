@@ -9,6 +9,7 @@ import {
   Sun, 
   FolderOpen,
   BarChart3,
+  CalendarCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,6 +18,7 @@ const navItems = [
   { label: "Resources", icon: FolderOpen, path: "/teacher/resources" },
   { label: "Analytics", icon: BarChart3, path: "/teacher/analytics" },
   { label: "Assessments", icon: ClipboardList, path: "/teacher/assessments" },
+  { label: "Attendance", icon: CalendarCheck, path: "/teacher/attendance" },
 ];
 
 const TeacherLayout = ({ children }: { children: ReactNode }) => {

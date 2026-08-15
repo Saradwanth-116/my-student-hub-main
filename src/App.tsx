@@ -19,6 +19,7 @@ import TeacherDashboard from "./pages/teacher/Dashboard";
 import TeacherResources from "./pages/teacher/Resources";
 import TeacherAnalytics from "./pages/teacher/Analytics";
 import TeacherAssessments from "./pages/teacher/Assessments";
+import TeacherAttendance from "./pages/teacher/Attendance";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => (
             <Route path="/teacher/resources" element={<TeacherResources />} />
             <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
             <Route path="/teacher/assessments" element={<TeacherAssessments />} />
+            <Route path="/teacher/attendance" element={<TeacherAttendance />} />
             <Route path="/marks" element={<ProtectedRoute><Marks /></ProtectedRoute>} />
             <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
             <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
