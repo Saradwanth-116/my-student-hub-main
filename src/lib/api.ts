@@ -1,12 +1,12 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export async function apiFetch<T>(path: string, token: string): Promise<T> {
-  const url = ${API_BASE};
+  const url = `${API_BASE}${path}`;
   console.log("[API] Fetching:", url);
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: Bearer ,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "69420",
       },
@@ -14,7 +14,7 @@ export async function apiFetch<T>(path: string, token: string): Promise<T> {
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       console.error("[API] Error response:", res.status, body);
-      throw new Error(API : );
+      throw new Error(`API ${res.status}: ${body}`);
     }
     const data = await res.json();
     console.log("[API] Success:", path, data);
