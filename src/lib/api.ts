@@ -109,3 +109,15 @@ export async function fetchPeerAverages(token: string): Promise<Record<string, n
   
   return data as Record<string, number>;
 }
+
+export type TeacherMarkEntry = MarksEntry & {
+  profiles: {
+    name: string;
+    roll_no: string;
+  };
+};
+
+export async function fetchAllMarksWithProfiles(): Promise<TeacherMarkEntry[]> {
+  // Using an empty token since the bypass teacher login doesn't have a real token
+  return apiFetch<TeacherMarkEntry[]>("/api/student/all-marks-with-profiles", "");
+}

@@ -38,3 +38,23 @@ async def get_peer_averages(user: dict = Depends(get_current_user)):
             
     averages = {code: round(sums[code] / counts[code]) for code in sums}
     return averages
+
+@router.get("/all-marks-with-profiles")
+async def get_all_marks_with_profiles():
+    """
+    Unprotected route for the Teacher Analytics Dashboard bypass demo.
+    Fetches all student marks and joins them with their profile information manually.
+    """
+    marks_res = supabase.table("marks").select("*").execute()
+    profiles_res = supabase.table("profiles").select("id, name, roll_no").execute()
+    
+    profiles_dict = {p["id"]: p for p in profiles_res.data}
+    
+    joined_data = []
+    for m in marks_res.data:
+        p = profiles_dict.get(m["user_id"], {})
+        m_copy = dict(m)
+        m_copy["profiles"] = {"name": p.get("name", "Unknown"), "roll_no": p.get("roll_no", "Unknown")}
+        joined_data.append(m_copy)
+        
+    return joined_data

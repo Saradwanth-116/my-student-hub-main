@@ -15,6 +15,10 @@ import Analytics from "./pages/Analytics";
 import History from "./pages/History";
 import Assessments from "./pages/Assessments";
 import Notifications from "./pages/Notifications";
+import TeacherDashboard from "./pages/teacher/Dashboard";
+import TeacherResources from "./pages/teacher/Resources";
+import TeacherAnalytics from "./pages/teacher/Analytics";
+import TeacherAssessments from "./pages/teacher/Assessments";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
@@ -57,8 +61,13 @@ const App = () => (
           <Routes>
             <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            {/* Admin and Teacher portals (Bypassed auth for now) */}
             <Route path="/admin" element={<UnderConstruction role="Admin" />} />
-            <Route path="/teacher" element={<UnderConstruction role="Teacher" />} />
+            <Route path="/teacher" element={<Navigate to="/teacher/dashboard" replace />} />
+            <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+            <Route path="/teacher/resources" element={<TeacherResources />} />
+            <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
+            <Route path="/teacher/assessments" element={<TeacherAssessments />} />
             <Route path="/marks" element={<ProtectedRoute><Marks /></ProtectedRoute>} />
             <Route path="/performance" element={<ProtectedRoute><Performance /></ProtectedRoute>} />
             <Route path="/resources" element={<ProtectedRoute><Resources /></ProtectedRoute>} />
